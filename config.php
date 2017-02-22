@@ -7,3 +7,6 @@ define('AWS_SECRET',        'YOUR SECRET');
 
 //The name of the bucket to upload to
 define('AWS_BUCKET_NAME',   'YOUR BUCKET NAME');
+
+//This is the root of the bucket
+define('AWS_BUCKET_FOLDER', '/');
