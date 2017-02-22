@@ -37,7 +37,7 @@
             uploader.on('progressStats', function(data) {
                 console.log(data);
             });
-            uploader.on('finishing', function(data) {
+            uploader.on('finishing', function() {
                 console.log('Upload complete, preparing final file');
             });
             uploader.on('complete', function(data) {
