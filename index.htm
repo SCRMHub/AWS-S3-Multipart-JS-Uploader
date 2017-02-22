@@ -24,9 +24,12 @@
 
             var uploader = new S3BlobUploader({type : 'video', partSize : (5 * 1024 * 1024)});
             
-            uploader.on('uploadStart', function() {
+            uploader.on('beforeUpload', function() {
                 updateProgress(0);
-                console.log('upload started');
+                console.log('preparing upload');
+            });
+            uploader.on('startUpload', function() {
+                console.log('upload starting');
             });
             uploader.on('progress', function(data) {
                 updateProgress(data);
