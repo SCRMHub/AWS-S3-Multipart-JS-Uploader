@@ -217,6 +217,8 @@
             }).done(function(data, textStatus, jqXHR) {
                 //And we're done
                 thisClass.fire('complete', data);
+            }).fail(function(evt) {
+                thisClass.fire('error', evt);
             });
         },
 
