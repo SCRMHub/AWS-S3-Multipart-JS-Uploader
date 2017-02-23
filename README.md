@@ -32,7 +32,7 @@ This demonstration shows you:
 - Getting a result
 
 ## The Javascript ##
-The library itself has no dependencies, so is completely self contained, and fairly fault tolerant. For example if a part fails to upload it will try that part two more times just in case it was a network glitch.
+The library itself requires jQuery, purely because of their awesome ajax functions. It is fault tolerant, to the point that if a part fails to upload it will try that part two more times just in case it was a network glitch.
 
 ### Options ##
 There are a few options you can adjust when invoking the JavaScript class:
@@ -113,3 +113,12 @@ This is triggered on the event of something failing during upload. This can be u
 
 #### cancel ####
 Fired on the event of the user cancelling the upload. On the server, this will perform the AWS cleanup functions correctly to help you avoid server spam. The response contains no data as it was user triggered.
+
+---
+## We're hiring ##
+We are an Artificial intelligence Marketing Technology startup that is growing quickly and working globally to deliver the next generation of tools and services. Our platform is pushing into new bigger markets and we’re looking for Engineers who are after their next challenge building a multi-lingual, multi-regional real-time platform built on big data and machine learning.
+
+To find out more about your next company and see the current opportunities, visit our careers page
+https://u.scrmhub.com/joinus
+
+SCRM Hub, Bring Artificial Intelligence to Marketing
