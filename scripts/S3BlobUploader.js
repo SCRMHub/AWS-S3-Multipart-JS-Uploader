@@ -1,6 +1,4 @@
 (function(window, document, undefined) {
-    'use strict';
-
     /**
      * Our main class
      * @param {array} opts configuration override options for the class
