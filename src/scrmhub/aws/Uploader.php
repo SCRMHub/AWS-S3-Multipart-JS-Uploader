@@ -3,7 +3,7 @@
     https://github.com/SCRMHub/AWS-S3-Multipart-JS-Uploader/LICENSE
 */
 /**
- * Example Server Setup Code
+ * Server Upload Class
  * @author Gregory Brine <greg.brine@scrmhub.com>
  */
 namespace SCRMHub\AWS;
