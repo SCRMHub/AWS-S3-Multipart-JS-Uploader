@@ -1,4 +1,4 @@
-# AWS-S3-Multipart-JS-Uploader
+# Client-to-AWS-S3-Multipart-JS-Uploader
 This library allows you to upload larges files directly to AWS in chunks directly from the browser, using the server to generate the URLs securely for each chunk. The backend is written in PHP but uses AWS' SDKs so is easy to port to other languages.
 
 It was based off the work done by @ienzam here: 
