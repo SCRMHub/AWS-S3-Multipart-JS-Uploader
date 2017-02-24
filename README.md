@@ -130,4 +130,4 @@ We are an Artificial intelligence Marketing Technology startup that is growing q
 To find out more about your next company and see the current opportunities, visit our careers page
 https://u.scrmhub.com/joinus
 
-SCRM Hub, Bring Artificial Intelligence to Marketing
+SCRM Hub, Bringing Artificial Intelligence to Marketing
