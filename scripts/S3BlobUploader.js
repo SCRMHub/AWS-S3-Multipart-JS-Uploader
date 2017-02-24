@@ -1,3 +1,6 @@
+/*! Copyright Social CRM Hub and other contributors. Licensed under MIT *//*
+    https://github.com/SCRMHub/AWS-S3-Multipart-JS-Uploader/LICENSE
+*/
 (function(window, document, undefined) {
     /**
      * Our main class
