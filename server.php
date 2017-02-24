@@ -1,4 +1,8 @@
 <?php
+/*! Copyright Social CRM Hub and other contributors. Licensed under MIT *//*
+    https://github.com/SCRMHub/AWS-S3-Multipart-JS-Uploader/LICENSE
+*/
+
 ini_set("log_errors", 1);
 ini_set("error_log", realpath(dirname(__FILE__))."/tmp/php-error.log");
 
