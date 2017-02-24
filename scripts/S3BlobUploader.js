@@ -1,6 +1,10 @@
 /*! Copyright Social CRM Hub and other contributors. Licensed under MIT *//*
     https://github.com/SCRMHub/AWS-S3-Multipart-JS-Uploader/LICENSE
 */
+/**
+ * S3BlobUploader Class
+ * @author Gregory Brine <greg.brine@scrmhub.com>
+ */
 (function(window, document, undefined) {
     /**
      * Our main class
