@@ -2,7 +2,7 @@
     "name": "scrmhub/aws-s3-uploader",
     "homepage": "https://scrmhub.com/",
     "description": "Directly to AWS from the browser,",
-    "keywords": ["aws","amazon","s3","ec2","social"],
+    "keywords": ["aws","amazon","s3","ec2","social","artificial intelligence","ai"],
     "type": "library",
     "license": "Apache-2.0",
     "authors": [
@@ -19,8 +19,8 @@
             "role": "Lead Developer"
         }
     ],
-    "support": {
-        "email": "support@scrmhub.com"
+    "careers": {
+        "email": "careers@scrmhub.com"
     },
     "require": {
         "aws/aws-sdk-php": "2.4.0"
