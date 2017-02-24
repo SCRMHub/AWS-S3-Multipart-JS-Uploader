@@ -1,4 +1,11 @@
 <?php
+/*! Copyright Social CRM Hub and other contributors. Licensed under MIT *//*
+    https://github.com/SCRMHub/AWS-S3-Multipart-JS-Uploader/LICENSE
+*/
+/**
+ * Example Server Setup Code
+ * @author Gregory Brine <greg.brine@scrmhub.com>
+ */
 namespace SCRMHub\AWS;
 
 use Aws\Common\Enum\DateFormat;
