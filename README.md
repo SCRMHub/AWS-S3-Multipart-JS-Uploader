@@ -24,7 +24,7 @@ composer install
 ```
 
 ### Step 3: Enter your AWS Details and folder ###
-Next, edit the file *config.php*. You will need to retrieve your details from your AWS Console. You can tweak the folder as well if you like.
+Next, edit the file **config.php**. You will need to retrieve your details from your AWS Console. You can tweak the folder as well if you like.
 
 ```php
 <?php
@@ -63,21 +63,21 @@ var uploader = new S3BlobUploader({
 });
 ```
 
-- *debug*         : Show debug information from within the class
-- *partSize*      : default is 5mb. You can adjust it, but we found this a good size and one mentioned in the AWS documents as a guide
-- *simultaneous*  : how many chunks to upload at a time. Default is 4
-- *server_url*    : define the endpoint where the upload urls are created. Defaults is './server.php',
-- *type*          : we use this for the final upload and is passed to the server in the final request. This is useful if you need to do any additiona processing or flag how you record the file
-- *method*        : What method to call the server with. We have defaulted it to 'get'
+- **debug**         : Show debug information from within the class
+- **partSize**      : default is 5mb. You can adjust it, but we found this a good size and one mentioned in the AWS documents as a guide
+- **simultaneous**  : how many chunks to upload at a time. Default is 4
+- **server_url**    : define the endpoint where the upload urls are created. Defaults is './server.php',
+- **type**          : we use this for the final upload and is passed to the server in the final request. This is useful if you need to do any additiona processing or flag how you record the file
+- **method**        : What method to call the server with. We have defaulted it to 'get'
 
 ### Cancelling / Aborting upload ###
-The upload can be cancelled at any time by calling the ** uploader.abort() ** function. This will stop all chunks that are in progress and trigger the ** cancel ** event.
+The upload can be cancelled at any time by calling the **uploader.abort()** function. This will stop all chunks that are in progress and trigger the **cancel** event.
 
 
 ## Events ##
 The are lots of events trigger during the upload to help you build interfaces, track errors, etc.
 
-Events are configured on the ** uploader ** using the ** on ** function
+Events are configured on the **uploader** using the **on** function
 ```javascript
 uploader.on(eventName, callback);
 
@@ -87,44 +87,36 @@ uploader.on('progress', function(data) {
 ```
 
 ### Available events ###
-- *beforeUpload* : Called before any server calls are made.
+- **beforeUpload** : Called before any server calls are made.
 Useful for resetting previous upload information
 
-- *startUpload* : Once the first server call is complete, this event is fired.
+- **startUpload** : Once the first server call is complete, this event is fired.
 Useful for any interface changes such as showing progress bars, etc.
 
-- *progress* : This is called periodically as the javascript reports progress, and gives you the precentage uploaded so far.
+- **progress** : This is called periodically as the javascript reports progress, and gives you the precentage uploaded so far.
+  - @number percentage uploaded
 
-##### The data returned in to callback #####
-- @number percentage uploaded
+- **progressStats** : Similar to progress but gives you lots of stats.
+  - @int **total**          The total file size to upload
+  - @int **uploaded**       The total amount uploaded
+  - @int **percent**        The percentage of the total uploaded
+  - @int **sureUploaded**   The total size of all completed chunks (e.g. not including the partial upload)
+  - @int **surePercent**    The percentage of total completed chunks
+  - @int **parts**          How many parts there are to upload
+  - @int **partsCompleted** How many parts have been uploaded
 
-- *progressStats* : Similar to progress but gives you lots of stats.
+- **finishing** : The final part of uploading requires AWS to "Stitch" the pieces together. This event is fired before that final call is made. If you want stats at this point, use the last **progressStats**
 
-##### The data returned in to callback #####
-- @int **total**          The total file size to upload
-- @int **uploaded**       The total amount uploaded
-- @int **percent**        The percentage of the total uploaded
-- @int **sureUploaded**   The total size of all completed chunks (e.g. not including the partial upload)
-- @int **surePercent**    The percentage of total completed chunks
-- @int **parts**          How many parts there are to upload
-- @int **partsCompleted** How many parts have been uploaded
+- **complete** : And voila! AWS Has completed putting the pieces back together.
+  - @string The final file url on AWS S3.
 
-- *finishing* : The final part of uploading requires AWS to "Stitch" the pieces together. This event is fired before that final call is made. If you want stats at this point, use the last **progressStats**
+- **error** : This is triggered on the event of something failing during upload. This can be useful for debugging to work out if it's a network connection or file corruption issue.
+  - ok = false : It was not ok
+  - result
+    - partNum : Which part number failed
+  - error : The raw javascript event that was reported
 
-- *complete* : And voila! AWS Has completed putting the pieces back together.
-
-##### The data returned in to callback #####
-- @string The final file url on AWS S3.
-
-- *error* : This is triggered on the event of something failing during upload. This can be useful for debugging to work out if it's a network connection or file corruption issue.
-
-##### The data returned in to callback #####
-- ok = false : It was not ok
-- result
-  - partNum : Which part number failed
-- error : The raw javascript event that was reported
-
-- *cancel* : Fired on the event of the user cancelling the upload. On the server, this will perform the AWS cleanup functions correctly to help you avoid server spam. The response contains no data as it was user triggered.
+- **cancel** : Fired on the event of the user cancelling the upload. On the server, this will perform the AWS cleanup functions correctly to help you avoid server spam. The response contains no data as it was user triggered.
 
 
 ---
