@@ -13,17 +13,30 @@ use Aws\S3\Model\MultipartUpload\UploadId;
 use Aws\S3\S3Client;
 use Exception;
 
+/**
+ * SCRM HUB AWS Example upload code
+ */
 class Uploader {
     private $client;
     private $bucket;
     private $folderpath;
 
+    /**
+     * Setup the class options
+     * @param \Aws\S3\S3Client  $client     The AWS Client
+     * @param string            $bucket     The AWS Bucket to upload to
+     * @param string            $folder     The folder path
+     */
     function __construct($client, $bucket, $folder = '/') {
         $this->client       = $client;
         $this->bucket       = $bucket;
         $this->folderpath   = $folder;
     }
 
+    /**
+     * The public hook 
+     * @return array    The response for the front end
+     */
     function run() {
         //Get the action
         $action = isset($_GET['action']) ? strtolower($_GET['action']) : '';
@@ -55,7 +68,10 @@ class Uploader {
         $this->sendResult($result);
     }   
 
-
+    /**
+     * This will create the signature call to start the upload
+     * @return string   The URL to call next 
+     */
     function multipartStartAction() {
         $bits       = explode('.', $_REQUEST['fileInfo']['name']);
         $extension  = array_pop($bits);
@@ -76,6 +92,10 @@ class Uploader {
         );
     }
 
+    /**
+     * This will create the signature for a file chunk
+     * @return string   The URL to call next 
+     */
     function multipartSignPartAction() {
         $command = $this->client->getCommand('UploadPart',
             array(
@@ -103,7 +123,11 @@ class Uploader {
         ];
     }
 
-
+    /**
+     * Completing the upload
+     * This call will stitch the file chunks together
+     * @return string   The URL to call next 
+     */
     private function multipartCompleteAction() {
         $partsModel = $this->client->listParts(array(
             'Bucket'    => $this->bucket,
@@ -123,6 +147,11 @@ class Uploader {
         ];
     }
 
+    /**
+     * Abort an upload
+     * This will clean up the files on the AWS Bucket
+     * @return string   The URL to call next 
+     */
     private function multipartAbortAction() {
         $model = $this->client->abortMultipartUpload(array(
             'Bucket'        => $this->bucket,
@@ -135,6 +164,10 @@ class Uploader {
         ];
     }
 
+    /**
+     * Simple Output class
+     * @param  array  $result The result to return to the browser
+     */
     private function sendResult(array $result) {
         $response = [
             'result' => $result
@@ -154,6 +187,6 @@ class Uploader {
 
         http_response_code($code);
         header('Content-Type: application/json');
-        die(json_encode($response));
+        exit(json_encode($response));
     }
 }
