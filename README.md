@@ -1,10 +1,10 @@
 # AWS-S3-Multipart-JS-Uploader
 This library allows you to upload larges files directly to AWS in chunks directly from the browser, using the server to generate the URLs securely for each chunk. The backend is written in PHP but uses AWS' SDKs so is easy to port to other languages.
 
-It was based off the work done by ienzam here: 
+It was based off the work done by @ienzam here: 
 https://github.com/ienzam/s3-multipart-upload-browser
 
-And the javascript upload methods was inspired by the flowjs library:
+And the javascript upload methods was inspired by the @flowjs library:
 https://github.com/flowjs/flow.js
 
 Ultimately, we combined those two approaches and added some bells and whistles to make it do what we needed it to. The only part missing is pausing because we didn't need it at the time.
@@ -13,7 +13,8 @@ Ultimately, we combined those two approaches and added some bells and whistles t
 ## Getting Started ###
 
 ### Step 1: Download the files ###
-Download the AWS Multpart Uploader here: https://github.com/SCRMHub/AWS-S3-Multipart-JS-Uploader/master.zip
+Download the AWS Multpart Uploader here:
+https://github.com/SCRMHub/AWS-S3-Multipart-JS-Uploader/master.zip
 
 The project is structured everything in the root for demostration but you can structure it however you like.
 
@@ -42,13 +43,16 @@ define('AWS_BUCKET_FOLDER', '/');
 ```
 
 ### Step 4: Try it ###
-With your server running, go to index.htm.
+With your server running, go to http://localhost:8000/index.htm.
 This demonstration shows you:
 - Initiating an upload
 - Cancelling an upload
 - Seeing the progress of the upload and parts of it
 - Getting a result
 
+```shell
+php -S localhost:8000
+```
 
 ## The Javascript ##
 The library itself requires jQuery, purely because of their awesome ajax functions. It is fault tolerant, to the point that if a part fails to upload it will try that part two more times just in case it was a network glitch.
@@ -67,7 +71,7 @@ var uploader = new S3BlobUploader({
 - **partSize**      : default is 5mb. You can adjust it, but we found this a good size and one mentioned in the AWS documents as a guide
 - **simultaneous**  : how many chunks to upload at a time. Default is 4
 - **server_url**    : define the endpoint where the upload urls are created. Defaults is './server.php',
-- **type**          : we use this for the final upload and is passed to the server in the final request. This is useful if you need to do any additiona processing or flag how you record the file
+- **type**          : we use this for the final upload and is passed to the server in the final request. This is useful if you need to do any additional processing or flag how you record the file
 - **method**        : What method to call the server with. We have defaulted it to 'get'
 
 ### Cancelling / Aborting upload ###
