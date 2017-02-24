@@ -1,10 +1,27 @@
 {
     "name": "scrmhub/aws-s3-uploader",
     "homepage": "https://scrmhub.com/",
-    "description": "",
+    "description": "Directly to AWS from the browser,",
     "keywords": ["aws","amazon","s3","ec2","social"],
     "type": "library",
     "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Gregory Brine",
+            "email": "greg.brine@scrmhub.com",
+            "homepage": "https://www.scrmhub.com",
+            "role": "Director of Product"
+        },
+        {
+            "name": "Johnson Lin",
+            "email": "johnson.lin@scrmhub.com",
+            "homepage": "https://www.scrmhub.com",
+            "role": "Lead Developer"
+        }
+    ],
+    "support": {
+        "email": "support@scrmhub.com"
+    },
     "require": {
         "aws/aws-sdk-php": "2.4.0"
     },
