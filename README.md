@@ -18,10 +18,28 @@ Download the AWS Multpart Uploader here: https://github.com/SCRMHub/AWS-S3-Multi
 The project is structured everything in the root for demostration but you can structure it however you like.
 
 ### Step 2: Run Composer ###
-Once you've installed the files, run ** Composer Install** . This will install the AWS SDK we use and configure the autoloader for our SDK files.  
+Once you've extracted the files, run [composer](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx). This will install the AWS SDK we use and configure the autoloader for our SDK files.
+```shell
+composer install
+```
 
 ### Step 3: Enter your AWS Details and folder ###
-Next, edit the file 'config.php'. You will need to retrieve your details from your AWS Console. You can tweak the folder as well if you like.
+Next, edit the file *config.php*. You will need to retrieve your details from your AWS Console. You can tweak the folder as well if you like.
+
+```php
+<?php
+//Your AWS key
+define('AWS_KEY',           'YOUR_KEY');
+
+//Your AWS Secret
+define('AWS_SECRET',        'YOUR SECRET');
+
+//The name of the bucket to upload to
+define('AWS_BUCKET_NAME',   'YOUR BUCKET NAME');
+
+//This is the root of the bucket
+define('AWS_BUCKET_FOLDER', '/');
+```
 
 ### Step 4: Try it ###
 With your server running, go to index.htm.
@@ -30,6 +48,7 @@ This demonstration shows you:
 - Cancelling an upload
 - Seeing the progress of the upload and parts of it
 - Getting a result
+
 
 ## The Javascript ##
 The library itself requires jQuery, purely because of their awesome ajax functions. It is fault tolerant, to the point that if a part fails to upload it will try that part two more times just in case it was a network glitch.
@@ -44,15 +63,16 @@ var uploader = new S3BlobUploader({
 });
 ```
 
-- debug         : Show debug information from within the class
-- partSize      : default is 5mb. You can adjust it, but we found this a good size and one mentioned in the AWS documents as a guide
-- simultaneous  : how many chunks to upload at a time. Default is 4
-- server_url    : define the endpoint where the upload urls are created. Defaults is './server.php',
-- type          : we use this for the final upload and is passed to the server in the final request. This is useful if you need to do any additiona processing or flag how you record the file
-- method        : What method to call the server with. We have defaulted it to 'get'
+- *debug*         : Show debug information from within the class
+- *partSize*      : default is 5mb. You can adjust it, but we found this a good size and one mentioned in the AWS documents as a guide
+- *simultaneous*  : how many chunks to upload at a time. Default is 4
+- *server_url*    : define the endpoint where the upload urls are created. Defaults is './server.php',
+- *type*          : we use this for the final upload and is passed to the server in the final request. This is useful if you need to do any additiona processing or flag how you record the file
+- *method*        : What method to call the server with. We have defaulted it to 'get'
 
 ### Cancelling / Aborting upload ###
 The upload can be cancelled at any time by calling the ** uploader.abort() ** function. This will stop all chunks that are in progress and trigger the ** cancel ** event.
+
 
 ## Events ##
 The are lots of events trigger during the upload to help you build interfaces, track errors, etc.
@@ -67,22 +87,18 @@ uploader.on('progress', function(data) {
 ```
 
 ### Available events ###
-#### beforeUpload ####
-Called before any server calls are made.
+- *beforeUpload* : Called before any server calls are made.
 Useful for resetting previous upload information
 
-#### startUpload ####
-Once the first server call is complete, this event is fired.
+- *startUpload* : Once the first server call is complete, this event is fired.
 Useful for any interface changes such as showing progress bars, etc.
 
-#### progress ####
-This is called periodically as the javascript reports progress, and gives you the precentage uploaded so far.
+- *progress* : This is called periodically as the javascript reports progress, and gives you the precentage uploaded so far.
 
 ##### The data returned in to callback #####
 - @number percentage uploaded
 
-#### progressStats ####
-Similar to progress but gives you lots of stats.
+- *progressStats* : Similar to progress but gives you lots of stats.
 
 ##### The data returned in to callback #####
 - @int **total**          The total file size to upload
@@ -93,17 +109,14 @@ Similar to progress but gives you lots of stats.
 - @int **parts**          How many parts there are to upload
 - @int **partsCompleted** How many parts have been uploaded
 
-#### finishing ####
-The final part of uploading requires AWS to "Stitch" the pieces together. This event is fired before that final call is made. If you want stats at this point, use the last **progressStats**
+- *finishing* : The final part of uploading requires AWS to "Stitch" the pieces together. This event is fired before that final call is made. If you want stats at this point, use the last **progressStats**
 
-#### complete ####
-And voila! AWS Has completed putting the pieces back together.
+- *complete* : And voila! AWS Has completed putting the pieces back together.
 
 ##### The data returned in to callback #####
 - @string The final file url on AWS S3.
 
-#### error ####
-This is triggered on the event of something failing during upload. This can be useful for debugging to work out if it's a network connection or file corruption issue.
+- *error* : This is triggered on the event of something failing during upload. This can be useful for debugging to work out if it's a network connection or file corruption issue.
 
 ##### The data returned in to callback #####
 - ok = false : It was not ok
@@ -111,8 +124,8 @@ This is triggered on the event of something failing during upload. This can be u
   - partNum : Which part number failed
 - error : The raw javascript event that was reported
 
-#### cancel ####
-Fired on the event of the user cancelling the upload. On the server, this will perform the AWS cleanup functions correctly to help you avoid server spam. The response contains no data as it was user triggered.
+- *cancel* : Fired on the event of the user cancelling the upload. On the server, this will perform the AWS cleanup functions correctly to help you avoid server spam. The response contains no data as it was user triggered.
+
 
 ---
 ## We're hiring ##
