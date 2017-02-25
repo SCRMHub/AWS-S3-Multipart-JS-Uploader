@@ -10,7 +10,7 @@
      * Our main class
      * @param {array} opts configuration override options for the class
      */
-    function S3BlobUploader(opts) {
+    S3BlobUploader = function(opts) {
         /**
          * Supported by browser?
          * @type {boolean}
@@ -82,7 +82,7 @@
          * @type {Object}
          */
         this.opts = S3BlobUploader.extend({}, this.defaults, opts || {});
-    }
+    };
 
 
     S3BlobUploader.prototype = {
@@ -272,7 +272,7 @@
             newChunk.start();
 
             //Send another part if not completely active
-            if(this.queue.active <= this.opts.simultaneous) {
+            if(this.queue.active < this.opts.simultaneous) {
               this.queueDespatchNext();
             }
         },        
