@@ -23,6 +23,8 @@
         "email": "careers@scrmhub.com"
     },
     "require": {
+        "ext-Curl": "*",
+        "ext-SimpleXML": "*",
         "aws/aws-sdk-php": "2.4.0"
     },
     "autoload": {
