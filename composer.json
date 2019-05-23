@@ -4,7 +4,7 @@
     "description": "Directly to AWS from the browser,",
     "keywords": ["aws","amazon","s3","ec2","social","artificial intelligence","ai"],
     "type": "library",
-    "license": "Apache-2.0",
+    "license": "MIT",
     "authors": [
         {
             "name": "Gregory Brine",
@@ -17,12 +17,20 @@
             "email": "johnson.lin@scrmhub.com",
             "homepage": "https://www.scrmhub.com",
             "role": "Lead Developer"
+        },
+        {
+            "name": "Arthur Moore",
+            "email": "arthur@heatrsd.com",
+            "homepage": "https://www.heatremotesensing.com",
+            "role": "Software Engineer"
         }
     ],
     "careers": {
         "email": "careers@scrmhub.com"
     },
     "require": {
+        "ext-Curl": "*",
+        "ext-SimpleXML": "*",
         "aws/aws-sdk-php": "2.4.0"
     },
     "autoload": {
