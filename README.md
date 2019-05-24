@@ -122,6 +122,21 @@ Useful for any interface changes such as showing progress bars, etc.
 
 - **cancel** : Fired on the event of the user cancelling the upload. On the server, this will perform the AWS cleanup functions correctly to help you avoid server spam. The response contains no data as it was user triggered.
 
+### DO NOT FORGET TO SET CORS IN YOUR S3 BUCKET ###
+You can set it to something like
+```
+<CORSConfiguration>
+ <CORSRule>
+   <AllowedOrigin>*</AllowedOrigin>
+
+   <AllowedMethod>PUT</AllowedMethod>
+   <AllowedMethod>POST</AllowedMethod>
+   <AllowedMethod>DELETE</AllowedMethod>
+
+   <AllowedHeader>*</AllowedHeader>
+ </CORSRule>
+</CORSConfiguration>
+```
 
 ---
 ## We're hiring ##
