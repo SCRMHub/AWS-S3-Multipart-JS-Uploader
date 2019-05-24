@@ -8,9 +8,11 @@
  */
 namespace SCRMHub\AWS;
 
+use Aws\Command;
 use Aws\Common\Enum\DateFormat;
+use Aws\MockHandler;
+use Aws\Result;
 use Aws\S3\Model\MultipartUpload\UploadId;
-use Aws\S3\S3Client;
 use Exception;
 
 /**
@@ -34,8 +36,7 @@ class Uploader {
     }
 
     /**
-     * The public hook 
-     * @return array    The response for the front end
+     * The public hook
      */
     function run() {
         //Get the action
@@ -70,7 +71,7 @@ class Uploader {
 
     /**
      * This will create the signature call to start the upload
-     * @return string   The URL to call next 
+     * @return array   The URL to call next
      */
     function multipartStartAction() {
         $bits       = explode('.', $_REQUEST['fileInfo']['name']);
@@ -82,8 +83,7 @@ class Uploader {
             'Bucket'        => $this->bucket,
             'Key'           => $filename,
             'ContentType'   => $_REQUEST['fileInfo']['type'],
-            'Metadata'      => $_REQUEST['fileInfo'],
-            'Body'          => ''
+            'Metadata'      => $_REQUEST['fileInfo']
         ));
 
         return array(
@@ -94,39 +94,48 @@ class Uploader {
 
     /**
      * This will create the signature for a file chunk
-     * @return string   The URL to call next 
+     *
+     * See here for more information:  https://docs.aws.amazon.com/sdk-for-php/v3/developer-guide/guide_commands.html
+     * @return array   The URL to call next
      */
     function multipartSignPartAction() {
+
+        // Create a mock handler
+        $mock = new MockHandler();
+        // Enqueue a mock result to the handler
+        $mock->append(new Result([]));
+
+        /**
+         * See https://docs.aws.amazon.com/aws-sdk-php/v3/api/api-s3-2006-03-01.html#uploadpart
+         * @var $command Command
+         */
         $command = $this->client->getCommand('UploadPart',
             array(
                 'Bucket'        => $this->bucket,
                 'Key'           => $_REQUEST['sendBackData']['key'],
                 'UploadId'      => $_REQUEST['sendBackData']['uploadId'],
                 'PartNumber'    => $_REQUEST['partNumber'],
-                'ContentLength' => $_REQUEST['contentLength']
+                'ContentLength' => $_REQUEST['contentLength'],
+                'ContentSHA256' => $_REQUEST['ContentSHA256'],
             )
         );
 
-        $request = $command->prepare();
-        // This dispatch commands wasted a lot of my times :'(
-        $this->client->dispatch('command.before_send', array('command' => $command));
-        $request->removeHeader('User-Agent');
-        $amzDate = gmdate(DateFormat::RFC2822);
-        $request->setHeader('x-amz-date', $amzDate);
-        // This dispatch commands wasted a lot of my times :'(
-        $this->client->dispatch('request.before_send', array('request' => $request));
+        $command->getHandlerList()->setHandler($mock);
+        // Executing the command will use the mock handler
+        $this->client->execute($command);
+        $request = $mock->getLastRequest();
 
         return [
-            'url'           => $request->getUrl(),
-            'authHeader'    => (string) $request->getHeader('Authorization'),
-            'dateHeader'    => (string) $amzDate
+            'url'           => (string) $request->getUri(),
+            'authHeader'    => $request->getHeader('Authorization')[0],
+            'dateHeader'    => $request->getHeader('X-Amz-Date')[0],
         ];
     }
 
     /**
      * Completing the upload
      * This call will stitch the file chunks together
-     * @return string   The URL to call next 
+     * @return array   The URL to call next
      */
     private function multipartCompleteAction() {
         $partsModel = $this->client->listParts(array(
@@ -136,10 +145,10 @@ class Uploader {
         ));
 
         $model = $this->client->completeMultipartUpload(array(
-            'Bucket'    => $this->bucket,
-            'Key'       => $_REQUEST['sendBackData']['key'],
-            'UploadId'  => $_REQUEST['sendBackData']['uploadId'],
-            'Parts'     => $partsModel['Parts'],
+            'Bucket'          => $this->bucket,
+            'Key'             => $_REQUEST['sendBackData']['key'],
+            'UploadId'        => $_REQUEST['sendBackData']['uploadId'],
+            'MultipartUpload' => ['Parts' => $partsModel->get('Parts') ],
         ));
 
         return [
@@ -150,7 +159,7 @@ class Uploader {
     /**
      * Abort an upload
      * This will clean up the files on the AWS Bucket
-     * @return string   The URL to call next 
+     * @return array   The URL to call next
      */
     private function multipartAbortAction() {
         $model = $this->client->abortMultipartUpload(array(

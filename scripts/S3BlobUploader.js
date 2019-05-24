@@ -7,6 +7,22 @@
  */
 (function(window, document, undefined) {
     /**
+     * Convert an ArrayBuffer into a hex string.
+     * From https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
+     * Used to create a sha-256 hash of the data without relying on external libraries
+     */
+    function hexString(buffer) {
+        const byteArray = new Uint8Array(buffer);
+
+        const hexCodes = [...byteArray].map(value => {
+            const hexCode = value.toString(16);
+            return hexCode.padStart(2, '0');
+        });
+
+        return hexCodes.join('');
+    }
+
+    /**
      * Our main class
      * @param {array} opts configuration override options for the class
      */
@@ -444,7 +460,7 @@
 
         /**
          * Upload a file
-         * @param  {[type]} fileToUpload [description]
+         * @param  {File} fileToUpload
          * @return {[type]}              [description]
          */
         start(fileToUpload) {
@@ -513,11 +529,18 @@
         }
     };
 
+    /**
+     * A part of a file
+     * @param {S3BlobUploader} uploader
+     * @param {number} partNum
+     * @param blob
+     * @param {Blob} chunk The current part of the blob that's being sent
+     */
     function S3BlobChunk(uploader, partNum, blob, chunk) {
       this.uploader   = uploader;
       this.chunk      = chunk;
       this.partNum    = partNum;
-      this.length     = blob.length;
+      this.length     = chunk.size;
       this.probableUploadSize = 0;
       this.tries = 0;
       this.errorMessage = [];
@@ -528,7 +551,17 @@
 
     S3BlobChunk.prototype = {
       start()  {
-        this.signChunk();
+        let thisClass = this;
+        let reader = new FileReader();
+        reader.onload = function (f) {
+            crypto.subtle.digest("SHA-256", f.target.result)
+            .then(function(result){
+                thisClass.hash = hexString(result);
+                console.log(thisClass.hash);
+                thisClass.signChunk();
+            });
+        };
+        reader.readAsArrayBuffer(this.chunk);
       },
       signChunk() {
         //Upload was cancelled
@@ -545,6 +578,7 @@
                     action:        'multipartSignPart',
                     partNumber:     this.partNum,
                     contentLength:  this.length,
+                    ContentSHA256:  this.hash,
                     sendBackData:   this.uploader.sendBackData
                 },
                 dataType: 'json'
@@ -586,7 +620,8 @@
         request.upload.addEventListener("error", function(evt) {
           thisClass.onFail(evt);
         });
-        request.setRequestHeader("x-amz-date",      thisClass.dateHeader);
+        request.setRequestHeader("X-Amz-Date", thisClass.dateHeader);
+        request.setRequestHeader("X-Amz-Content-Sha256", thisClass.hash);
         request.setRequestHeader("Authorization",   thisClass.authHeader);
         //request.setRequestHeader("Content-Length",  thisClass.length);
         
