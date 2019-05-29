@@ -88,10 +88,10 @@
          * Internal logging based on if we're debugging or not
          **/
         log(args) {
-                    if(this.opts.debug) {
-                        window.console.log(args);
-                    }
-                }
+            if(this.opts.debug) {
+                window.console.log(args);
+            }
+        }
 
         /**
          * register a callback event
@@ -534,7 +534,7 @@
                 crypto.subtle.digest("SHA-256", f.target.result)
                     .then(function(result){
                         thisClass.hash = hexString(result);
-                        console.log(thisClass.hash);
+                        // console.log(thisClass.hash);
                         thisClass.signChunk();
                     });
             };
