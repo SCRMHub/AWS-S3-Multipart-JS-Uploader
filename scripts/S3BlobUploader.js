@@ -106,9 +106,9 @@
         /**
          * Internal logging based on if we're debugging or not
          **/
-        log: function(arguments) {
+        log: function(args) {
             if(this.opts.debug) {
-                window.console.log(arguments);
+                window.console.log(args);
             }
         },
 
