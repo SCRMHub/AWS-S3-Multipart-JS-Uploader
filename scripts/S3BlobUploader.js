@@ -77,8 +77,6 @@
 
             this.numParts = 0;
 
-            var $ = this;
-
             /**
              * Current options
              * @type {Object}
@@ -139,13 +137,13 @@
             // `arguments` is an object, not array, in FF, so:
             args = Array.prototype.slice.call(arguments);
             event = event.toLowerCase();
-            var preventDefault = false;
+            let preventDefault = false;
             if (this.events.hasOwnProperty(event)) {
                 each(this.events[event], function (callback) {
                     preventDefault = callback.apply(this, args.slice(1)) === false || preventDefault;
                 }, this);
             }
-            if (event != 'catchall') {
+            if (event !== 'catchall') {
                 args.unshift('catchAll');
                 preventDefault = this.fire.apply(this, args) === false || preventDefault;
             }
@@ -168,14 +166,14 @@
          * @return {array} some stuff about how we're tracking
          */
         updateProgressBar() {
-            var surePercent    = this.sureUploadSize / this.totalSize,
-                percent        = this.uploadedSize / this.totalSize;;
+            let surePercent    = this.sureUploadSize / this.totalSize;
+            let percent        = this.uploadedSize / this.totalSize;
 
             if(percent > 0.9999) {
                 percent = 1;
             }
 
-            var progress = {
+            let progress = {
                 total:          this.totalSize,
                 uploaded:       this.uploadedSize,
                 percent:        percent,
@@ -194,7 +192,7 @@
          * @return {event} The finishing event
          */
         completeMultipartUpload() {
-            var thisClass = this;
+            let thisClass = this;
 
             //So something failed so stop uploading
             if(this.queue.failed > 0) {
@@ -231,7 +229,7 @@
          * Dispatch the next part of the upload
          * Spawns instances of the S3BlobChunk
          */
-        queueDespatchNext() {
+        queueDispatchNext() {
             //So something failed so stop uploading
             if(this.queue.failed > 0) {
                 return;
@@ -242,10 +240,10 @@
                 return;
             }
 
-            var despatching = this.queue.last + 1;
+            let dispatching = this.queue.last + 1;
 
             //No parts left
-            if (despatching > this.numParts) {
+            if (dispatching > this.numParts) {
                 //No active parts
                 if(this.queue.active === 0) {
                     this.completeMultipartUpload();
@@ -255,15 +253,15 @@
             }
 
             //Info on what's being uploaded
-            var blob        = this.queue.blobs[despatching];
-            var curBlobPart = this.file.slice(blob.start, blob.end);
+            let blob        = this.queue.blobs[dispatching];
+            let curBlobPart = this.file.slice(blob.start, blob.end);
 
             //New Chunk objects
-            var newChunk = new S3BlobChunk(this, despatching, blob, curBlobPart);
+            let newChunk = new S3BlobChunk(this, dispatching, blob, curBlobPart);
 
             //Add the chunk for reference
-            this.queue.blobs[despatching].chunk = newChunk;
-            this.queue.last = despatching;
+            this.queue.blobs[dispatching].chunk = newChunk;
+            this.queue.last = dispatching;
 
             //Up the count
             this.queue.active += 1;
@@ -273,7 +271,7 @@
 
             //Send another part if not completely active
             if(this.queue.active < this.opts.simultaneous) {
-                this.queueDespatchNext();
+                this.queueDispatchNext();
             }
         }
 
@@ -296,7 +294,7 @@
             this.updateProgressBar();
 
             //Send next part
-            this.queueDespatchNext();
+            this.queueDispatchNext();
         }
 
         /**
@@ -305,7 +303,7 @@
          * @param  {event} evt      What happened
          */
         chunkFailed(partNum, evt) {
-            var currentCount = this.queue.failed;
+            let currentCount = this.queue.failed;
 
             this.queue.start = false;
             this.queue.failed += 1;
@@ -352,7 +350,7 @@
 
         //Send the abort command to the server
         abortUpload() {
-            var thisClass = this;
+            let thisClass = this;
             //Abort it on the server
             $.ajax({
                 url:    thisClass.opts.server_url,
@@ -370,32 +368,33 @@
         //Cancel any active chunks
         cancelAllChunks() {
             //Loop through all blobs and stop them
-            for(var i in this.queue.blobs) {
-                var thisClass = this.queue.blobs[i];
+            for(let i in this.queue.blobs) {
+                let thisClass = this.queue.blobs[i];
 
                 if(thisClass.chunk) {
                     thisClass.chunk.abort();
                 }
             }
-                }
+        }
 
         /**
          * Prepares the details of each chunk for the queue
          * @param  {[type]} partNum [description]
+         * @param lastPart
          * @return {[type]}         [description]
          */
         preparePart(partNum, lastPart) {
-            var start   = (partNum - 1) * this.opts.partSize;
-
+            let start = (partNum - 1) * this.opts.partSize;
+            let end = 0;
             //Last chunk always ends with the file size
             if (lastPart) {
                 end = this.totalSize;
             } else {
-                var end     = start + this.opts.partSize;
+                end = start + this.opts.partSize;
             }
 
             //How much is going up this time
-            var length = end - start;
+            let length = end - start;
 
             //Add it to the queus
             this.queue.blobs[partNum] = {
@@ -415,8 +414,8 @@
             this.sendBackData = data;
             this.updateProgressBar();
 
-            var totalParts = this.totalSize / this.opts.partSize;
-            var totalFloor   = Math.floor(totalParts);
+            let totalParts = this.totalSize / this.opts.partSize;
+            let totalFloor   = Math.floor(totalParts);
 
             //Make sure it's never zero parts
             if(totalFloor <= 0) {
@@ -432,12 +431,11 @@
 
             }
 
-            var i;
-            for (i = 1; i <= this.numParts; i++) {
-                this.preparePart(i, (i == this.numParts));
+            for (let i = 1; i <= this.numParts; i++) {
+                this.preparePart(i, (i === this.numParts));
             }
 
-            this.queueDespatchNext();
+            this.queueDispatchNext();
         }
 
         /**
@@ -452,19 +450,14 @@
                 this.sendBackData           = {};
                 this.progress               = {}; //progress of each blob
                 this.uploadedSize           = 0;
-                this.uploadingSize          = 0;
-                this.partUploadedSize       = 0;
-                this.sureUploadSize         = 0,
-                    this.probableUploadSize     = 0;
-                this.numParts;
-                this.partsLeft = [];
+                this.sureUploadSize         = 0;
 
-                var file = this.file    = fileToUpload;
+                let file = this.file    = fileToUpload;
 
                 this.totalSize          = file.size;
 
                 //Get back to "this"
-                var thisClass = this;
+                let thisClass = this;
 
                 //Pre run
                 this.fire('beforeUpload');
@@ -554,7 +547,7 @@
                 return;
             }
 
-            var thisClass = this;
+            let thisClass = this;
 
             $.ajax({
                   url:    thisClass.uploader.opts.server_url,
@@ -583,8 +576,8 @@
                 return;
             }
 
-            var thisClass   = this;
-            var request     = new XMLHttpRequest();
+            let thisClass   = this;
+            let request     = new XMLHttpRequest();
 
             request.open('PUT', thisClass.url, true);
             request.contentLength = thisClass.length;
@@ -620,13 +613,13 @@
 
         updatePartProgress(loaded) {
             //Work out how much went up this time
-            var loadedSize = loaded - this.probableUploadSize;
+            let loadedSize = loaded - this.probableUploadSize;
 
             //Save it for next update
             this.probableUploadSize = loaded;
 
             //chunk Percentage
-            var progressPercent = this.chunk.size / loaded;
+            let progressPercent = this.chunk.size / loaded;
 
             //Tell the parent about how far we got
             this.uploader.updatePartProgress(this.partNum, loadedSize, progressPercent);
@@ -677,7 +670,7 @@
     * @param value
     */
     function arrayRemove(array, value) {
-        var index = array.indexOf(value);
+        let index = array.indexOf(value);
         if (index > -1) {
             array.splice(index, 1);
         }
@@ -737,7 +730,7 @@
         if (!obj) {
             return ;
         }
-        var key;
+        let key;
         // Is Array?
         if (typeof(obj.length) !== 'undefined') {
           for (key = 0; key < obj.length; key++) {
