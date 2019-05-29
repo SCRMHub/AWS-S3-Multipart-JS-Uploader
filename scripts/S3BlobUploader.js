@@ -7,22 +7,6 @@
  * @author Arthur Moore <arthur@heatrsd.com>
  */
 (function(window, document, undefined) {
-    /**
-     * Convert an ArrayBuffer into a hex string.
-     * From https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
-     * Used to create a sha-256 hash of the data without relying on external libraries
-     */
-    function hexString(buffer) {
-        const byteArray = new Uint8Array(buffer);
-
-        const hexCodes = [...byteArray].map(value => {
-            const hexCode = value.toString(16);
-            return hexCode.padStart(2, '0');
-        });
-
-        return hexCodes.join('');
-    }
-
     class S3BlobUploader {
         /**
          * Our main class
@@ -61,7 +45,7 @@
                 simultaneous  : 4,
                 server_url    : './server.php',
                 method        : 'get'
-            }
+            };
 
             /**
              * Current options
@@ -687,8 +671,6 @@
         }
     }
 
-
-
     /**
     * Remove value from array
     * @param array
@@ -715,7 +697,6 @@
         }
         return data;
     }
-    S3BlobUploader.evalOpts = evalOpts;
 
     /**
     * Execute function asynchronously
@@ -744,7 +725,6 @@
         });
         return dst;
     }
-    S3BlobUploader.extend = extend;
 
     /**
     * Iterate each element of an object
@@ -773,6 +753,25 @@
           }
         }
     }
+
+    /**
+     * Convert an ArrayBuffer into a hex string.
+     * From https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
+     * Used to create a sha-256 hash of the data without relying on external libraries
+     */
+    function hexString(buffer) {
+        const byteArray = new Uint8Array(buffer);
+
+        const hexCodes = [...byteArray].map(value => {
+            const hexCode = value.toString(16);
+            return hexCode.padStart(2, '0');
+        });
+
+        return hexCodes.join('');
+    }
+
+    S3BlobUploader.evalOpts = evalOpts;
+    S3BlobUploader.extend = extend;
     S3BlobUploader.each = each;
 
     if ( typeof module === "object" && module && typeof module.exports === "object" ) {
