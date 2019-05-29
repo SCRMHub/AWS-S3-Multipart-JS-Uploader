@@ -217,7 +217,7 @@
                     requestType:    thisClass.opts.type,
                     sendBackData:   thisClass.sendBackData
                 }
-            }).done(function(data, textStatus, jqXHR) {
+            }).done(function(data) {
                 //And we're done
                 thisClass.fire('complete', data);
             }).fail(function(evt) {
@@ -360,8 +360,6 @@
                     sendBackData: this.sendBackData
                 },
                 dataType: 'json'
-            }).done(function(data, textStatus, jqXHR) {
-
             });
                 }
 
@@ -475,7 +473,7 @@
                         }
                     },
                     dataType: 'json'
-                }).done(function(data, textStatus, jqXHR) {
+                }).done(function(data) {
                     if(data.ok) {
                         //Start the upload
                         thisClass.queue.start = true;
@@ -560,7 +558,7 @@
                       sendBackData:   this.uploader.sendBackData
                   },
                   dataType: 'json'
-              }).done(function(data, textStatus, jqXHR) {
+              }).done(function(data) {
                   thisClass.url         = data.result.url;
                   thisClass.authHeader  = data.result.authHeader;
                   thisClass.dateHeader  = data.result.dateHeader;
