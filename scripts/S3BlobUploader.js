@@ -523,9 +523,16 @@
             this.request = false;
             this.maxTries = 3;
             this.aborted = false;
+            this.hash = '';
+            this.useSha256 = true;
         }
 
         start() {
+            if(!this.useSha256) {
+                this.hash = 'UNSIGNED-PAYLOAD';
+                this.signChunk();
+                return
+            }
             let thisClass = this;
             let reader = new FileReader();
             reader.onload = function (f) {
