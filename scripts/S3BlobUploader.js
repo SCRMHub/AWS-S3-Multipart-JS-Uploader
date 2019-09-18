@@ -588,9 +588,13 @@
             request.contentLength = thisClass.length;
 
             request.onreadystatechange = function() {
-                if (request.readyState === 4 && request.status === 200) {
-                    //Done with a chunk
-                    thisClass.onDone(request.contentLength);
+                if (request.readyState === 4) {
+                    if (request.status === 200) {
+                        //Done with a chunk
+                        thisClass.onDone(request.contentLength);
+                        return;
+                    }
+                    thisClass.onFail(`Upload failed with status code: ${request.status}`);
                 }
             };
             request.upload.onprogress = function(e) {
