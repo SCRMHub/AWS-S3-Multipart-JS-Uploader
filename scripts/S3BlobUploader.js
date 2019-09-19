@@ -647,7 +647,7 @@
             this.tries += 1;
 
             //3 fails :(
-            if(this.tries >= this.maxTries) {
+            if(this.tries > this.maxTries) {
                 this.uploader.chunkFailed(this.partNum, evt);
 
                 //try again
